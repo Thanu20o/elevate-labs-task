@@ -1,0 +1,136 @@
+
+  Objectives
+- Conduct network discovery and host enumeration
+- Identify open ports and running services
+- Analyze security risks associated with discovered services
+- Document findings and provide mitigation recommendations
+- Develop professional reporting skills for cybersecurity assessments
+
+ Tools Used
+- **Nmap 7.96** - Network mapping and port scanning
+- **Windows Command Prompt** - System administration and network analysis
+- **Git/GitHub** - Version control and documentation
+- **TCP/IP Protocols** - Network communication analysis
+
+ Tasks Performed
+
+ Network Configuration Analysis
+- Executed `ipconfig` command to map local network interfaces
+- Identified IP addressing schemes across multiple adapters
+- Documented network topology and segmentation
+- Key Finding: Discovered VirtualBox NAT network (192.168.56.0/24) as primary scan target
+
+. Network Scanning with Nmap
+- Performed SYN Stealth Scan (`nmap -sS`) on 192.168.56.0/24 subnet
+- Scanned 256 IP addresses to identify live hosts
+- Utilized TCP connect methodology for comprehensive port discovery
+-Command Used: `nmap -sS 192.168.56.1/24`
+
+ 3. Service Discovery & Enumeration
+- Identified active hosts within the target subnet
+- Discovered open TCP ports and associated services
+- Documented service banners and port states
+- Discovered Services:
+  - Port 53/tcp - DNS Service (domain)
+  - Port 135/tcp - Microsoft RPC Endpoint Mapper (msrpc)
+  - Port 139/tcp - NetBIOS Session Service (netbios-ssn)
+  - Port 445/tcp - SMB File Sharing (microsoft-ds)
+
+4. Security Risk Assessment
+ Critical Risks Identified:
+- Port 445 (SMB): EternalBlue vulnerability potential, worm propagation risk
+- Port 135 (MSRPC): Remote code execution vulnerabilities
+- Port 139 (NetBIOS): Credential theft and session hijacking
+- Port 53 (DNS): Information leakage and DNS tunneling possibilities
+
+ Risk Prioritization:
+| Service | Risk Level | Primary Threats |
+|---------|------------|-----------------|
+| SMB (445/tcp) | CRITICAL | RCE, worm spread, pass-the-hash |
+| MSRPC (135/tcp) | HIGH | Remote code execution, enumeration |
+| NetBIOS (139/tcp) | HIGH | Credential theft, information disclosure |
+| DNS (53/tcp) | MEDIUM-HIGH | Information leakage, cache poisoning |
+Microsoft Windows [Version 10.0.26200.6899]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Thanusha>ipconfig
+
+Windows IP Configuration
+
+
+Wireless LAN adapter Local Area Connection* 1:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+
+Wireless LAN adapter Local Area Connection* 2:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+
+Wireless LAN adapter Wi-Fi:
+
+   Connection-specific DNS Suffix  . :
+   IPv6 Address. . . . . . . . . . . : 2409:40f0:2030:a0c1:70ac:ef5:8161:b2f8
+   Temporary IPv6 Address. . . . . . : 2409:40f0:2030:a0c1:8db2:d45d:4ce6:5696
+   Link-local IPv6 Address . . . . . : fe80::172a:5921:462d:36e7%13
+   IPv4 Address. . . . . . . . . . . : 10.173.169.175
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : fe80::2850:71ff:fe63:7672%13
+                                       10.173.169.199
+
+Ethernet adapter Bluetooth Network Connection:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+
+Ethernet adapter Ethernet:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+ Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+
+Ethernet adapter Ethernet:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+
+C:\Users\Thanusha>nmap 10.173.169.0/24
+Starting Nmap 7.98 ( https://nmap.org ) at 2025-10-20 13:35 +0530
+Nmap scan report for 10.173.169.199
+Host is up (0.0084s latency).
+Not shown: 999 closed tcp ports (reset)
+PORT   STATE SERVICE
+53/tcp open  domain
+MAC Address: 2A:50:71:63:76:72 (Unknown)
+
+Nmap scan report for 10.173.169.175
+Host is up (0.0013s latency).
+Not shown: 997 closed tcp ports (reset)
+PORT    STATE SERVICE
+135/tcp open  msrpc
+139/tcp open  netbios-ssn
+445/tcp open  microsoft-ds
+
+Nmap done: 256 IP addresses (2 hosts up) scanned in 9.19 seconds
+
+C:\Users\Thanusha>nmap -sS 10.173.169.0/24
+Starting Nmap 7.98 ( https://nmap.org ) at 2025-10-20 13:37 +0530
+Nmap scan report for 10.173.169.199
+Host is up (0.0099s latency).
+Not shown: 999 closed tcp ports (reset)
+PORT   STATE SERVICE
+53/tcp open  domain
+MAC Address: 2A:50:71:63:76:72 (Unknown)
+
+Nmap scan report for 10.173.169.175
+Host is up (0.000058s latency).
+Not shown: 997 closed tcp ports (reset)
+PORT    STATE SERVICE
+135/tcp open  msrpc
+139/tcp open  netbios-ssn
+445/tcp open  microsoft-ds
+
+Nmap done: 256 IP addresses (2 hosts up) scanned in 7.38 seconds
+
